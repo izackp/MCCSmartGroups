@@ -37,13 +37,14 @@ NS_INLINE NSArray *indexPathsForSectionWithIndexSet(NSInteger section, NSIndexSe
 - (void)dealloc {
   self.effectiveSmartGroups = nil;
   self.smartGroups = nil;
-  [super dealloc];
 }
 
 
 #pragma mark query and manage SmartGroups
 
-- (NSArray *)smartGroups { return [[smartGroups copy]autorelease]; }
+- (NSArray *)smartGroups {
+    return [smartGroups copy];
+}
 
 - (MCCSmartGroup *)smartGroupWithTag:(NSUInteger)tag {
   __block MCCSmartGroup *smartGroup = nil;
@@ -195,7 +196,7 @@ NS_INLINE NSArray *indexPathsForSectionWithIndexSet(NSInteger section, NSIndexSe
   __block typeof(smartGroup) __smartGroup = smartGroup;
   __block typeof(self) __self = self;
   
-  return [[^void(NSInteger count, NSIndexSet* reloads, NSIndexSet* removes, NSIndexSet* inserts) {
+  return [^void(NSInteger count, NSIndexSet* reloads, NSIndexSet* removes, NSIndexSet* inserts) {
     if ((count == 0) && __smartGroup.shouldHideWhenEmpty) {
       if ([__self.effectiveSmartGroups indexOfObject:__smartGroup] != NSNotFound) [__self hideSmartGroup:__smartGroup inTableView:__tableView];
       return;
@@ -233,7 +234,7 @@ NS_INLINE NSArray *indexPathsForSectionWithIndexSet(NSInteger section, NSIndexSe
     [__tableView endUpdates];
     
     if (__smartGroup.debug) { NSLog(@"Did flush updates for smartgroup %@", __smartGroup); }
-  } copy]autorelease];
+  } copy];
 }
 
 @end

@@ -61,8 +61,6 @@
   self.pendingVisibleIndexes = nil;
   
   self.userInfo = nil;
-
-  [super dealloc];
 }
 
 - (NSString *)description {
@@ -97,13 +95,13 @@
   NSAssert(dataBlock, @"no data block");
   if (cached) return;
   
-  id oldData = [[data copy]autorelease];
+  id oldData = [data copy];
   
   __block id newData = nil;
   if ([NSThread isMainThread]) {
-    newData = [[dataBlock() copy]autorelease];
+    newData = [dataBlock() copy];
   } else dispatch_sync(dispatch_get_main_queue(), ^{
-    newData = [[dataBlock() copy]autorelease];
+    newData = [self->dataBlock() copy];
   });
   
   NSAssert1(newData, @"dataBlock must return an object. Empty or not. (%@)", self);
@@ -140,7 +138,7 @@
   self.removeIndexes = removes;
   self.insertIndexes = inserts;
   
-  NSAssert(oldCount + inserts.count - removes.count == _count, @"oups!");
+  NSAssert(oldCount + (NSInteger)inserts.count - (NSInteger)removes.count == _count, @"oups!");
   
 #ifdef DEBUG_MCCSmartGroup
   NSLog(@"Cached: %@: (old count: %d; new count: %d; inserts: %@; removes: %@; reloads: %@)", self, oldCount, _count, inserts, removes, reloads);
@@ -214,13 +212,13 @@
     NSSet *previousSet = [NSSet setWithArray:[oldData allKeys]];
     NSSet *newSet = [NSSet setWithArray:[newData allKeys]];
 
-    NSMutableSet *addedSet = [[newSet mutableCopy]autorelease];
+    NSMutableSet *addedSet = [newSet mutableCopy];
     [addedSet minusSet:previousSet];
     
-    NSMutableSet *removedSet = [[previousSet mutableCopy]autorelease];
+    NSMutableSet *removedSet = [previousSet mutableCopy];
     [removedSet minusSet:newSet];
 
-    NSMutableSet *remainingSet = [[newSet mutableCopy]autorelease];
+    NSMutableSet *remainingSet = [newSet mutableCopy];
     [remainingSet intersectSet:previousSet];
     
     
@@ -236,7 +234,7 @@
     
     [addedSet enumerateObjectsUsingBlock:^(NSNumber *index, BOOL *stop){
       __block NSInteger i = 0;
-      [visibleIndexes enumerateObjectsUsingBlock:^(id vi, NSUInteger idx, BOOL *stop) {
+      [visibleIndexes enumerateObjectsUsingBlock:^(id vi, NSUInteger idx, BOOL *stop2) {
         if ([vi integerValue] < [index integerValue]) {
           i = idx + 1;
         }
@@ -244,9 +242,9 @@
       [toInsert addIndex:i];
     }];
     
-    *reloads = [toReload autorelease];
-    *removes = [toRemove autorelease];
-    *inserts = [toInsert autorelease];
+    *reloads = toReload;
+    *removes = toRemove;
+    *inserts = toInsert;
 
     return _count;
   }
@@ -260,9 +258,9 @@
   NSLog(@"Data count %d -> %d", previousSet.count, newSet.count);
 #endif
 
-  NSMutableSet *addedSet = [[newSet mutableCopy]autorelease];
+  NSMutableSet *addedSet = [newSet mutableCopy];
   [addedSet minusSet:previousSet];
-  NSMutableSet *removedSet = [[previousSet mutableCopy]autorelease];
+  NSMutableSet *removedSet = [previousSet mutableCopy];
   [removedSet minusSet:newSet];
 
 #ifdef DEBUG_MCCSmartGroup
@@ -281,7 +279,7 @@
     [toInsert addIndex:[newData indexOfObject:object]];
   }];
   
-  NSMutableSet *remainingSet = [[newSet mutableCopy]autorelease];
+  NSMutableSet *remainingSet = [newSet mutableCopy];
   [remainingSet intersectSet:previousSet];
   
 #ifdef DEBUG_MCCSmartGroup
@@ -300,9 +298,9 @@
   }];
   
   
-  *reloads = [toReload autorelease];
-  *removes = [toRemove autorelease];
-  *inserts = [toInsert autorelease];
+  *reloads = toReload;
+  *removes = toRemove;
+  *inserts = toInsert;
   
   return _count;
 }

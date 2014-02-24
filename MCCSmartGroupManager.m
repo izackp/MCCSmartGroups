@@ -100,6 +100,16 @@ NS_INLINE NSArray *indexPathsForSectionWithIndexSet(NSInteger section, NSIndexSe
   return insertIndex;
 }
 
+- (void)clearSmartGroups {
+    [smartGroups removeAllObjects];
+    dirty = TRUE;
+}
+
+- (void)removeSmartGroup:(MCCSmartGroup*)smartGroup {
+    [smartGroups removeObject:smartGroup];
+    dirty = TRUE;
+}
+
 - (void)addSmartGroup:(MCCSmartGroup*)smartGroup inTableView:(UITableView *)aTableView {
   [self addSmartGroup:smartGroup];
   smartGroup.onUpdate = [self buildUITableViewUpdateBlockForTableView:aTableView smartGroup:smartGroup];
@@ -173,10 +183,7 @@ NS_INLINE NSArray *indexPathsForSectionWithIndexSet(NSInteger section, NSIndexSe
   smartGroup.onMoveRowAtIndexPath(fromIndexPath, toIndexPath);
 }
 
-
-
 #pragma mark tool method
-
 - (void)hideSmartGroup:(MCCSmartGroup *)smartGroup inTableView:(UITableView *)tableView {
   NSInteger effectiveIndex = [self effectiveIndexOfSmartGroup:smartGroup];
   [effectiveSmartGroups removeObject:smartGroup];

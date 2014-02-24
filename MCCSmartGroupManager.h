@@ -20,6 +20,8 @@
 - (NSUInteger)effectiveSmartGroupsCount;
 - (MCCSmartGroup *)smartGroupAtEffectiveIndex:(NSUInteger)index;
 
+- (void)clearSmartGroups;
+- (void)removeSmartGroup:(MCCSmartGroup*)smartGroup;
 - (void)addSmartGroup:(MCCSmartGroup*)smartGroup;
 
 - (void)reload; /* force a reload of smartGroups. Note: no need to do it when attached to a tableView. */
